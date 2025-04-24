@@ -8,4 +8,10 @@ declare module "next-auth" {
       email: string;
     } & DefaultSession["user"];
   }
+
+  interface User {
+    id: string;
+    username: string;
+    email: string;
+  }
 }

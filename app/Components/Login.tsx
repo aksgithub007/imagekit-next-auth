@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CardHeader, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -29,6 +29,11 @@ const defaultvalues = {
   password: "",
 };
 
+interface LoginType {
+  email: string;
+  password: string;
+}
+
 function Login() {
   const router = useRouter();
   const {
@@ -36,25 +41,23 @@ function Login() {
     reset,
     formState: { errors, isSubmitting },
     handleSubmit,
-    watch,
-    setValue,
   } = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: defaultvalues,
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginType) => {
     try {
-      const { error, ok, status }: any = await signIn("credentials", {
+      const response: SignInResponse | undefined = await signIn("credentials", {
         redirect: false,
         email: data?.email,
         password: data?.password,
       });
 
-      if (error) {
-        toast.error(error);
+      if (response?.error) {
+        toast.error(response.error);
       }
-      if (ok && status === 200) {
+      if (response?.ok && response?.status === 200) {
         toast.success("Sign In Successfully");
         reset();
         router.push("/");

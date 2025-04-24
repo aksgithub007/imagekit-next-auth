@@ -22,7 +22,7 @@ const ConnectDB = async () => {
   }
 
   if (!cached.promise) {
-    let option = {
+    const option = {
       bufferCommands: true,
       maxPoolSize: 10,
     };
@@ -37,9 +37,9 @@ const ConnectDB = async () => {
 
   try {
     return cached.conn;
-  } catch (error: any) {
-    console.log(error);
-    throw new Error("Something went wrong", error);
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    throw new Error("Something went wrong while connecting to MongoDB");
   }
 };
 

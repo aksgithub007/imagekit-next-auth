@@ -27,7 +27,7 @@ export const authOptions = {
         },
       },
 
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const email = credentials?.email;
         const password = credentials?.password;
 

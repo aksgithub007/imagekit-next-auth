@@ -6,6 +6,7 @@ export const videoQuality = {
 } as const;
 
 export interface VideoSchemaType {
+  _id?: mongoose.Types.ObjectId;
   title: string;
   description: string;
   thumbnailUrl: string;

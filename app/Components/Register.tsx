@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CardHeader, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -42,6 +42,12 @@ const defaultvalues = {
   confirmpassword: "",
 };
 
+interface RegisterType {
+  username: string;
+  email: string;
+  password: string;
+}
+
 function Register() {
   const router = useRouter();
   const {
@@ -49,14 +55,12 @@ function Register() {
     reset,
     formState: { errors, isSubmitting },
     handleSubmit,
-    watch,
-    setValue,
   } = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: defaultvalues,
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: RegisterType) => {
     const newUser = {
       username: data.username,
       email: data.email,

@@ -7,9 +7,10 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Link from "next/link";
 import CircularProgress from "@mui/material/CircularProgress";
+import { VideoSchemaType } from "@/models/VideoModal";
 
 function Dashboard() {
-  const [videos, setVideos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<VideoSchemaType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function Dashboard() {
             flexWrap: "wrap",
           }}
         >
-          {videos.map((video, index) => (
+          {videos.map((video) => (
             <Box key={video.title}>
               <Link
                 href={`/videos/${video._id}`}
