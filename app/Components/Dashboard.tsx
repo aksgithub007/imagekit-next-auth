@@ -1,5 +1,5 @@
 "use client";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { IKVideo, IKImage } from "imagekitio-next";
 import Card from "@mui/material/Card";
@@ -8,30 +8,49 @@ import CardContent from "@mui/material/CardContent";
 import Link from "next/link";
 import CircularProgress from "@mui/material/CircularProgress";
 import { VideoSchemaType } from "@/models/VideoModal";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 function Dashboard() {
   const [videos, setVideos] = useState<VideoSchemaType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const fetchVideos = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/video", { method: "GET" });
+      const finalData = await response.json();
+      if (finalData) {
+        setVideos(finalData);
+      }
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/video", { method: "GET" });
-        const finalData = await response.json();
-        console.log(finalData, "Video List");
-        if (finalData) {
-          setVideos(finalData);
-        }
-      } catch (error) {
-        console.error("Error fetching videos:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchVideos();
   }, []);
+
+  const handleDelete = async (id: any) => {
+    console.log(id);
+    try {
+      const response = await fetch("/api/video", {
+        method: "DELETE",
+        body: JSON.stringify(id),
+      });
+      const finalData = await response.json();
+      if (finalData) {
+        toast.success(finalData?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    } finally {
+      fetchVideos();
+    }
+  };
 
   return (
     <>
@@ -54,16 +73,13 @@ function Dashboard() {
             flexWrap: "wrap",
           }}
         >
-          {videos.map((video) => (
-            <Box key={video.title}>
-              <Link
-                href={`/videos/${video._id}`}
-                style={{ textDecoration: "none" }}
-              >
+          {videos &&
+            videos?.map((video) => (
+              <Box key={video.title}>
                 <Card
                   sx={{
                     width: 340,
-                    height: 400,
+                    height: 500,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
@@ -134,14 +150,22 @@ function Dashboard() {
                     <Typography variant="body2">
                       {video?.description}
                     </Typography>
+                    <Box>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleDelete(video?._id)}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
                   </CardActions>
                 </Card>
-              </Link>
-            </Box>
-          ))}
+              </Box>
+            ))}
         </Box>
       )}
-      {(videos.length === 0 || !isLoading) && (
+      {videos.length === 0 && !isLoading && (
         <Box
           sx={{
             display: "flex",

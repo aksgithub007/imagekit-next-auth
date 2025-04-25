@@ -38,7 +38,9 @@ export default function Header() {
                 marginRight: "20px",
               }}
             >
-              {session?.user?.username.toUpperCase()}
+              {session?.user?.name
+                ? session?.user?.name.toUpperCase()
+                : session?.user?.username.toUpperCase()}
             </Link>
           </Typography>
           <Link

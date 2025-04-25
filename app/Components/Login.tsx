@@ -15,6 +15,9 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { signIn, SignInResponse } from "next-auth/react";
+import { Github } from "lucide-react";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GoogleIcon from "@mui/icons-material/Google";
 
 export const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -68,8 +71,14 @@ function Login() {
   };
 
   const handleGoogleLogin = async () => {
-    const response = await signIn("google", { redirect: false });
+    const response = await signIn("google", { callbackUrl: "/" });
+
     console.log(response, "google response");
+  };
+  const handleGithubLogin = async () => {
+    const response = await signIn("github", { callbackUrl: "/" });
+
+    console.log(response, "Github response");
   };
 
   return (
@@ -139,7 +148,53 @@ function Login() {
                 >
                   Reset
                 </Button>
-                <Button onClick={handleGoogleLogin}>Sign in with Google</Button>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
+                <Button
+                  onClick={handleGoogleLogin}
+                  variant="outlined"
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "white",
+                    color: "black",
+                    border: "1px solid #d3d3d3",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    "&:hover": {
+                      backgroundColor: "#f1f1f1",
+                    },
+                  }}
+                >
+                  <GoogleIcon />
+                  Sign in with Google
+                </Button>
+
+                <Button
+                  onClick={handleGithubLogin}
+                  variant="contained"
+                  sx={{
+                    textTransform: "none",
+                    backgroundColor: "#24292E",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    "&:hover": {
+                      backgroundColor: "#1b1f23",
+                    },
+                  }}
+                >
+                  <GitHubIcon />
+                  Sign in with GitHub
+                </Button>
               </Box>
             </CardContent>
           </form>
